@@ -1,5 +1,7 @@
 package org.spbsu.mkn.scala
 
+import java.lang.invoke.WrongMethodTypeException
+import scala.io.StdIn.{readInt, readLine}
 import scala.util.Random
 
 object TheGame {
@@ -46,8 +48,37 @@ object TheGame {
 
   def main(args: Array[String]): Unit = {
     print("Enter your name: ")
-    val name = "Ainur"
+    val name = readLine()
     println(s"Hello, $name!")
-    println(generateNumberString(1))
+    print("Enter length: ")
+    var length = readInt()
+    while(length < 0 || length > 26 + 10) {
+      println("Length must be in [0,36]")
+      print("Enter length: ")
+      length = readInt()
+    }
+    val secret = generateNumberString(length)
+    println("Secret key is generated! Try to guess!")
+    var turn = 1
+    var flag = true
+    while (flag) {
+      print("Enter your attempt: ")
+      val userInput = readLine()
+      try {
+        validate(secret, userInput, turn) match {
+          case x : Correct =>
+            print(s"Good job! You have won in ${x.numTries} tries")
+            flag = false
+          case x : Incorrect =>
+            println(s"Try again! Cows: ${x.cows}, bulls: ${x.bulls}")
+        }
+      } catch {
+        case _ : WrongNumberLengthException => println(s"Wrong length! Expected ${length}. Try again!")
+      }
+
+
+
+      turn += 1
+    }
   }
 }
