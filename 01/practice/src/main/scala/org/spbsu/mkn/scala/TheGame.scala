@@ -35,7 +35,7 @@ object TheGame {
   def validate(secret: String, userInput: String, numTries: Int = 1): GuessResult = {
     val length = secret.length
     if (length != userInput.length) throw new WrongNumberLengthException(length, userInput.length)
-    if (!isUnique(secret)) throw new RepeatingDigitsException()
+    if (!isUnique(userInput) || !isUnique(secret)) throw new RepeatingDigitsException()
     if (secret == userInput) return Correct(numTries)
     var (cows, bulls) = (0, 0)
     for (i <- 0 until length) {
@@ -73,9 +73,8 @@ object TheGame {
         }
       } catch {
         case _: WrongNumberLengthException => println(s"Wrong length! Expected $length. Try again!")
+        case _: RepeatingDigitsException => println(s"You can not enter string with repeating characters! Try again!")
       }
-
-
       turn += 1
     }
   }
