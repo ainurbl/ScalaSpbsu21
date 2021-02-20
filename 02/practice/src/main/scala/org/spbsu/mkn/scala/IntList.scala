@@ -2,8 +2,6 @@ package org.spbsu.mkn.scala
 
 import org.spbsu.mkn.scala.IntList._
 
-import scala.annotation.tailrec
-
 sealed trait IntList {
   def head: Int
 
@@ -30,8 +28,7 @@ object IntList {
 
   def size(intList: IntList): Int = foldLeft((calculated: Int, _: Int) => calculated + 1)(0)(intList)
 
-  @tailrec
-  def foldLeft(f: (Int, Int) => Int)(init: Int)(intList: IntList): Int = intList match {
+  def foldLeft(f: (Int, Int) => Int)(init: Int): IntList => Int = {
     case IntNil => init
     case x :: xs => foldLeft(f)(f(init, x))(xs)
   }
