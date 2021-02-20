@@ -2,6 +2,8 @@ package org.spbsu.mkn.scala
 
 import org.spbsu.mkn.scala.IntList._
 
+import scala.annotation.tailrec
+
 sealed trait IntList {
   def head: Int
 
@@ -23,14 +25,15 @@ object IntList {
 
   def sum(intList: IntList): Int = intList match {
     case IntNil => undef
-    case a => foldLeft((calculated: Int, init: Int) => calculated + init)(a)
+    case a => foldLeft((calculated: Int, init: Int) => calculated + init)(0)(a)
   }
 
-  def size(intList: IntList): Int = foldLeft((_: Int, calculated: Int) => calculated + 1)(intList)
+  def size(intList: IntList): Int = foldLeft((calculated: Int, _: Int) => calculated + 1)(0)(intList)
 
-  def foldLeft(f: (Int, Int) => Int)(intList: IntList): Int = intList match {
-    case IntNil => 0
-    case x :: xs => f(x, 0) + foldLeft(f)(xs)
+  @tailrec
+  def foldLeft(f: (Int, Int) => Int)(init: Int)(intList: IntList): Int = intList match {
+    case IntNil => init
+    case x :: xs => foldLeft(f)(f(init, x))(xs)
   }
 }
 
