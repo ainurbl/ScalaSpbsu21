@@ -5,7 +5,7 @@ import org.spbsu.mkn.scala.IntList._
 sealed trait IntList {
   def head: Int
 
-  def tail: IntList = drop(1)
+  def tail: IntList
 
   def drop(n: Int): IntList
 
@@ -42,6 +42,8 @@ case object IntNil extends IntList {
   override def take(n: Int): IntList = if (n == 0) this else undef // possible simplification is take = drop, but is it OK?
 
   override def map(f: Int => Int): IntList = this
+
+  override def tail: IntList = undef
 }
 
 case class ::(x: Int, xs: IntList) extends IntList {
@@ -52,4 +54,6 @@ case class ::(x: Int, xs: IntList) extends IntList {
   override def take(n: Int): IntList = if (n == 0) IntNil else x :: (xs take n - 1)
 
   override def map(f: Int => Int): IntList = f(x) :: (xs map f)
+
+  override def tail: IntList = xs
 }
